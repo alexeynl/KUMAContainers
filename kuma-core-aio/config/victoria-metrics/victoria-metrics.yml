@@ -1,0 +1,31 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+
+- job_name: kuma
+  scheme: https
+  tls_config:
+    ca_file: "/opt/kaspersky/kuma/core/certificates/ca.cert"
+    cert_file: "/opt/kaspersky/kuma/core/certificates/internal.cert"
+    key_file: "/opt/kaspersky/kuma/core/certificates/internal.key"
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: hostname
+    regex: ([^:]+):.*
+  file_sd_configs:
+  - files: ["scrape/kuma-core.yml", "scrape/kuma-collector-*.yml", "scrape/kuma-correlator-*.yml", "scrape/kuma-storage-*.yml"]
+
+- job_name: kuma-clickhouse
+  scheme: https
+  tls_config:
+    ca_file: "/opt/kaspersky/kuma/core/certificates/storage-ca.cert"
+    cert_file: "/opt/kaspersky/kuma/core/certificates/storage-ca.cert"
+    key_file: "/opt/kaspersky/kuma/core/certificates/storage-ca.key"
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: hostname
+    regex: ([^:]+):.*
+  file_sd_configs:
+  - files: ["scrape/kuma-clickhouse-*.yml"]
+    

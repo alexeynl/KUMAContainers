@@ -1,0 +1,35 @@
+[Unit]
+Description=Victoria Metrics Vmalert
+Documentation=https://docs.victoriametrics.com/
+After=network.target
+StartLimitIntervalSec=1
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutSec=300
+
+User=kuma
+Group=kuma
+
+ExecStart=/opt/kaspersky/kuma/victoria-metrics/bin/vmalert \
+        -rule=/opt/kaspersky/kuma/victoria-metrics/cfg/rules/* \
+        -datasource.url=http://localhost:9090 \
+        -remoteWrite.url=http://localhost:9090 \
+        -remoteRead.url=http://localhost:9090 \
+        -httpListenAddr=localhost:8880 \
+        -configCheckInterval=1m \
+        -loggerLevel=ERROR \
+        -disableMetricLabels=true
+
+LimitFSIZE=infinity
+LimitCPU=infinity
+LimitAS=infinity
+LimitNOFILE=128000
+LimitNPROC=64000
+LimitMEMLOCK=infinity
+TasksMax=infinity
+TasksAccounting=false
+
+[Install]
+WantedBy=multi-user.target

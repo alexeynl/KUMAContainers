@@ -1,0 +1,8 @@
+#!/bin/bash
+
+/usr/sbin/logrotate  /opt/kaspersky/kuma/mongodb/logrotate/mongo-logrotate.conf
+EXITVALUE=$?
+if [ $EXITVALUE != 0 ]; then
+    /usr/bin/logger -t logrotate "kuma mongodb logrotate exited abnormally with [$EXITVALUE]"
+fi
+exit $EXITVALUE

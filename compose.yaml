@@ -1,0 +1,43 @@
+services:
+  kuma-core-01:
+    image: localhost/kuma-core-aio:test
+    build: 
+      context: .
+      dockerfile: ./kuma-core-aio/Dockerfile
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.11
+    ports:
+      #KUMA Web UI
+      - "7220:7220"
+  kuma-correlator-01:
+    image: localhost/kuma-correlator:test
+    build: 
+      context: .
+      dockerfile: ./kuma-correlator/Dockerfile
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.21
+  kuma-storage-01:
+    image: localhost/kuma-storage:test
+    build: 
+      context: .
+      dockerfile: ./kuma-storage/Dockerfile
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.31
+  kuma-collector-01:
+    image: localhost/kuma-collector:test
+    build: 
+      context: .
+      dockerfile: ./kuma-collector/Dockerfile
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.41
+
+networks:
+  kuma-int:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.1.0/24"
