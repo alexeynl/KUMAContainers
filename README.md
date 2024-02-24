@@ -54,5 +54,6 @@ In the KUMAContainers folder:
 Next you are able to run container with this image
 
 * `podman run -d --name kuma-core-01 kuma-core-aio:test`
-
-
+# Result
+![image](https://github.com/alexeynl/KUMAContainers/assets/82229750/e687b11c-7617-4332-8eff-91d5733d6c5b)
+![image](https://github.com/alexeynl/KUMAContainers/assets/82229750/976f6ccc-e7dc-445b-929d-f01971ce916b)
