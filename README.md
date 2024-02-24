@@ -45,6 +45,8 @@ Open KUMA Core Web UI in Browser:
 
 https://localhost:7220
 
+enter default credentials (you can find default credentials in the ansible script).
+
 ## Build Image for Specific KUMA Component
 In the KUMAContainers folder:
 * `podman build -t kuma-core-aio:test -f kuma-core-aio/Dockerfile .`
