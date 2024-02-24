@@ -4,6 +4,7 @@ services:
     build: 
       context: .
       dockerfile: ./kuma-core-aio/Dockerfile
+    hostname: kuma-core-01
     networks:
       kuma-int:
         ipv4_address: 172.16.1.11
@@ -15,6 +16,7 @@ services:
     build: 
       context: .
       dockerfile: ./kuma-correlator/Dockerfile
+    hostname: kuma-correlator-01
     networks:
       kuma-int:
         ipv4_address: 172.16.1.21
@@ -23,6 +25,7 @@ services:
     build: 
       context: .
       dockerfile: ./kuma-storage/Dockerfile
+    hostname: kuma-storage-01
     networks:
       kuma-int:
         ipv4_address: 172.16.1.31
@@ -31,6 +34,7 @@ services:
     build: 
       context: .
       dockerfile: ./kuma-collector/Dockerfile
+    hostname: kuma-collector-01
     networks:
       kuma-int:
         ipv4_address: 172.16.1.41
