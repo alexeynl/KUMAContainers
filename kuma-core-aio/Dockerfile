@@ -93,14 +93,17 @@ COPY kuma-core-aio/scripts/start_core.sh /usr/local/bin
 
 #Not working 
 #ENTRYPOINT [ "/usr/local/bin/start_core.sh" ]
-#Workaround:
-RUN dnf install cronie
-COPY kuma-core-aio/config/cron/run_once /etc/cron.d/
-RUN chmod 400 /etc/cron.d/run_once
-COPY kuma-core-aio/scripts/run_once.sh /usr/local/bin/
-RUN mkdir -p /etc/local/runonce.d/ran
-COPY kuma-core-aio/scripts/start_core.sh /etc/local/runonce.d/
-RUN systemctl enable crond
+#Workaround v1:
+#RUN dnf install cronie
+#COPY kuma-core-aio/config/cron/run_once /etc/cron.d/
+#RUN chmod 400 /etc/cron.d/run_once
+#COPY kuma-core-aio/scripts/run_once.sh /usr/local/bin/
+#RUN mkdir -p /etc/local/runonce.d/ran
+#COPY kuma-core-aio/scripts/start_core.sh /etc/local/runonce.d/
+#RUN systemctl enable crond
+#Workaround v2:
+COPY kuma-core-aio/config/core/kuma-core-init.service /etc/systemd/system/
+RUN systemctl enable kuma-core-init.service
 
 CMD ["/sbin/init"]
 
