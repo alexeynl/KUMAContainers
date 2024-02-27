@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: ./kuma-core-aio/Dockerfile
     hostname: kuma-core-01
+    volumes:
+      - kuma-core-01:/opt/kaspersky/kuma
     networks:
       kuma-int:
         ipv4_address: 172.16.1.11
@@ -19,6 +21,8 @@ services:
       context: .
       dockerfile: ./kuma-correlator/Dockerfile
     hostname: kuma-correlator-01
+    volumes:
+      - kuma-correlator-01:/opt/kaspersky/kuma
     networks:
       kuma-int:
         ipv4_address: 172.16.1.21
@@ -29,6 +33,8 @@ services:
       context: .
       dockerfile: ./kuma-storage/Dockerfile
     hostname: kuma-storage-01
+    volumes:
+      - kuma-storage-01:/opt/kaspersky/kuma
     networks:
       kuma-int:
         ipv4_address: 172.16.1.31
@@ -39,6 +45,8 @@ services:
       context: .
       dockerfile: ./kuma-collector/Dockerfile
     hostname: kuma-collector-01
+    volumes:
+      - kuma-collector-01:/opt/kaspersky/kuma
     networks:
       kuma-int:
         ipv4_address: 172.16.1.41
@@ -49,3 +57,12 @@ networks:
       driver: default
       config:
         - subnet: "172.16.1.0/24"
+volumes:
+  kuma-core-01:
+    name: vl_kuma-core-01
+  kuma-correlator-01:
+    name: vl_kuma-correlator-01
+  kuma-storage-01:
+    name: vl_kuma-storage-01
+  kuma-collector-01:
+    name: vl_kuma-collector-01
