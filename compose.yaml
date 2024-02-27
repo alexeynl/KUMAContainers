@@ -1,5 +1,6 @@
 services:
   kuma-core-01:
+    container_name: kuma-core-01
     image: localhost/kuma-core-aio:test
     build: 
       context: .
@@ -12,6 +13,7 @@ services:
       #KUMA Web UI
       - "7220:7220"
   kuma-correlator-01:
+    container_name: kuma-correlator-01
     image: localhost/kuma-correlator:test
     build: 
       context: .
@@ -21,6 +23,7 @@ services:
       kuma-int:
         ipv4_address: 172.16.1.21
   kuma-storage-01:
+    container_name: kuma-storage-01
     image: localhost/kuma-storage:test
     build: 
       context: .
@@ -30,6 +33,7 @@ services:
       kuma-int:
         ipv4_address: 172.16.1.31
   kuma-collector-01:
+    container_name: kuma-collector-01
     image: localhost/kuma-collector:test
     build: 
       context: .
