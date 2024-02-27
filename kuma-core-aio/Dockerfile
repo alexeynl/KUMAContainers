@@ -68,6 +68,7 @@ RUN systemctl enable kuma-grafana.service
 RUN tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/kuma"
 #RUN mv kuma-ansible-installer/roles/kuma/files/kuma /opt/kaspersky/kuma/core/bin
 RUN mv kuma-ansible-installer/roles/kuma/files/kuma /opt/kaspersky/kuma/
+RUN yes | /opt/kaspersky/kuma/kuma license
 #Create Core log directories
 RUN mkdir -p /opt/kaspersky/kuma/core/log
 RUN mkdir -p /opt/kaspersky/kuma/core/logrotate
