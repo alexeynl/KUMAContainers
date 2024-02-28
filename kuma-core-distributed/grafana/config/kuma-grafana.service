@@ -1,0 +1,22 @@
+[Unit]
+Description=Grafana server
+Documentation=http://docs.grafana.org
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=1
+
+[Service]
+User=kuma
+Group=kuma
+Type=notify
+Restart=always
+RestartSec=5
+TimeoutSec=300
+
+ExecStart=/opt/grafana/bin/grafana-server --homepath=/opt/grafana
+
+LimitNOFILE=10000
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=Init KUMA Core on Container Start
+After=kuma-mongodb.service
+Requires=kuma-mongodb.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/prepare_mongodb.sh
+[Install]
+WantedBy=multi-user.target

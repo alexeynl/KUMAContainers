@@ -1,0 +1,32 @@
+[Unit]
+Description=Victoria Metrics
+Documentation=https://docs.victoriametrics.com/
+After=network.target
+StartLimitIntervalSec=1
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutSec=300
+
+User=kuma
+Group=kuma
+
+ExecStart=/opt/victoria-metrics/bin/victoria-metrics \
+        --storageDataPath=/opt/victoria-metrics/data \
+        --promscrape.config=/opt/victoria-metrics/cfg/victoria-metrics.yml \
+        --httpListenAddr=0.0.0.0:9090 \
+        --loggerLevel=WARN \
+        --retentionPeriod=3
+
+LimitFSIZE=infinity
+LimitCPU=infinity
+LimitAS=infinity
+LimitNOFILE=128000
+LimitNPROC=64000
+LimitMEMLOCK=infinity
+TasksMax=infinity
+TasksAccounting=false
+
+[Install]
+WantedBy=multi-user.target

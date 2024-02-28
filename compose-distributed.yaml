@@ -1,0 +1,136 @@
+services:
+  kuma-correlator-01:
+    container_name: kuma-correlator-01
+    image: localhost/kuma-correlator:test
+    build: 
+      context: .
+      dockerfile: ./kuma-correlator/Dockerfile
+    hostname: kuma-correlator-01
+    volumes:
+      - kuma-correlator-01:/opt/kaspersky/kuma
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.21
+  kuma-storage-01:
+    container_name: kuma-storage-01
+    image: localhost/kuma-storage:test
+    build: 
+      context: .
+      dockerfile: ./kuma-storage/Dockerfile
+    hostname: kuma-storage-01
+    volumes:
+      - kuma-storage-01:/opt/kaspersky/kuma
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.31
+  kuma-collector-01:
+    container_name: kuma-collector-01
+    image: localhost/kuma-collector:test
+    build: 
+      context: .
+      dockerfile: ./kuma-collector/Dockerfile
+    hostname: kuma-collector-01
+    volumes:
+      - kuma-collector-01:/opt/kaspersky/kuma
+    #for tcpdump
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.41
+  kuma-mongodb-01:
+    container_name: kuma-mongodb-01
+    image: localhost/kuma-mongodb:test
+    build: 
+      context: .
+      dockerfile: ./kuma-core-distributed/mongodb/Dockerfile
+    hostname: kuma-mongodb-01
+    volumes:
+      - kuma-mongodb-01:/opt/mongodb
+    #for tcpdump
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.12
+  kuma-victoria-01:
+    container_name: kuma-victoria-01
+    image: localhost/kuma-victoria:test
+    build: 
+      context: .
+      dockerfile: ./kuma-core-distributed/victoria-metrics/Dockerfile
+    hostname: kuma-victoria-01
+    volumes:
+      - kuma-victoria-01:/opt/victoria-metrics
+      - kuma-core-certs:/opt/kaspersky/kuma/core/certificates
+      - kuma-victoria-scrape:/opt/victoria-metrics/cfg/scrape/
+    #for tcpdump
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.13
+  kuma-grafana-01:
+    container_name: kuma-grafana-01
+    image: localhost/kuma-grafana:test
+    build: 
+      context: .
+      dockerfile: ./kuma-core-distributed/grafana/Dockerfile
+    hostname: kuma-grafana-01
+    volumes:
+      - kuma-grafana-01:/opt/grafana
+    #for tcpdump
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.14
+  kuma-core-01:
+    container_name: kuma-core-01
+    image: localhost/kuma-core:test
+    build: 
+      context: .
+      dockerfile: ./kuma-core-distributed/core/Dockerfile
+    hostname: kuma-core-01
+    volumes:
+      - kuma-core-01:/opt/kaspersky/kuma
+      - kuma-core-certs:/opt/kuma-core-certs
+    #for tcpdump
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    networks:
+      kuma-int:
+        ipv4_address: 172.16.1.11
+    ports:
+      #KUMA Web UI
+      - "7220:7220"
+networks:
+  kuma-int:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.1.0/24"
+volumes:
+  kuma-core-certs:
+    name: vl_kuma-core-certs
+  kuma-victoria-scrape:
+    name: vl_kuma_victoria-scrape
+  kuma-core-01:
+    name: vl_kuma-core-01
+  kuma-correlator-01:
+    name: vl_kuma-correlator-01
+  kuma-storage-01:
+    name: vl_kuma-storage-01
+  kuma-collector-01:
+    name: vl_kuma-collector-01
+  kuma-mongodb-01:
+    name: vl_kuma-mongodb-01
+  kuma-grafana-01:
+    name: vl_kuma-grafana-01
+  kuma-victoria-01:
+    name: vl_kuma-victoria-01
