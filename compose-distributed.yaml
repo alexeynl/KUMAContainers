@@ -99,6 +99,7 @@ services:
     volumes:
       - kuma-core-01:/opt/kaspersky/kuma
       - kuma-core-certs:/opt/kuma-core-certs
+      - kuma-victoria-scrape:/opt/kaspersky/kuma/victoria-metrics/cfg/scrape
     #for tcpdump
     cap_add:
       - NET_RAW

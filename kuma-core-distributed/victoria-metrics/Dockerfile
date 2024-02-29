@@ -28,6 +28,9 @@ RUN chown -R kuma:kuma /opt/victoria-metrics
 #Create certs directory
 RUN mkdir -p /opt/kaspersky/kuma/core/certificates/
 
+RUN mkdir -p /opt/kaspersky/kuma/victoria-metrics/cfg/scrape
+RUN chown -R kuma:kuma /opt/kaspersky
+
 CMD ["/sbin/init"]
 
 #comment if you need distr in container (for troubleshooting)
