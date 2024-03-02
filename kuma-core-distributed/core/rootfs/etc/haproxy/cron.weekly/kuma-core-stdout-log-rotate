@@ -1,0 +1,8 @@
+#!/bin/sh
+
+/usr/sbin/logrotate  /opt/kaspersky/kuma/core/logrotate/stdout-logrotate.conf
+EXITVALUE=$?
+if [ $EXITVALUE != 0 ]; then
+    /usr/bin/logger -t logrotate "kuma core stdout logrotate exited abnormally with [$EXITVALUE]"
+fi
+exit $EXITVALUE

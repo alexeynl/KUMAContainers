@@ -8,6 +8,10 @@ services:
     hostname: kuma-core-01
     volumes:
       - kuma-core-01:/opt/kaspersky/kuma
+    #for tcpdump
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
     networks:
       kuma-int:
         ipv4_address: 172.16.1.11
@@ -47,6 +51,10 @@ services:
     hostname: kuma-collector-01
     volumes:
       - kuma-collector-01:/opt/kaspersky/kuma
+    #for tcpdump
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
     networks:
       kuma-int:
         ipv4_address: 172.16.1.41

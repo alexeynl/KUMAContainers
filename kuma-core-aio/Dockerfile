@@ -1,96 +1,92 @@
 FROM oraclelinux:9
 COPY resources/kuma-dis[t]/kuma-ansible-installer-3.0.2.37.tar.gz kuma-dis[t]/kuma-ansible-installer-3.0.2.37.tar.gz /kuma-dist/
 #common prerequisites
-RUN dnf install hostname
+RUN dnf install hostname \
 #Create KUMA service user
-RUN useradd --system kuma && usermod -s /usr/bin/false kuma
+    && useradd --system kuma && usermod -s /usr/bin/false kuma \
 #Create vendor directory
 #Create KUMA directory
-RUN mkdir -p /opt/kaspersky/kuma/core/bin/
+    && mkdir -p /opt/kaspersky/kuma/core/bin/ \
 
 #Task: Install Kuma Updater
 #core/kuma-updater.yml
 #Unarchive directory
-RUN tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/kuma-updater.tar.gz"
-RUN tar -zxvf /kuma-ansible-installer/roles/kuma/files/kuma-updater.tar.gz
-RUN mv kuma-updater /opt/kaspersky/kuma/
+    && tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/kuma-updater.tar.gz" \
+    && tar -zxvf /kuma-ansible-installer/roles/kuma/files/kuma-updater.tar.gz \
+    && mv kuma-updater /opt/kaspersky/kuma/ \
 
 #Task: Install MongoDB
 #core/mongodb.yml
 #Unarchive directory
-RUN dnf install compat-openssl11.x86_64
-RUN tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/mongodb.tar.gz"
-RUN tar -zxvf kuma-ansible-installer/roles/kuma/files/mongodb.tar.gz
-RUN mv mongodb /opt/kaspersky/kuma/
+    && dnf install compat-openssl11.x86_64 \
+    && tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/mongodb.tar.gz" \
+    && tar -zxvf kuma-ansible-installer/roles/kuma/files/mongodb.tar.gz \
+    && mv mongodb /opt/kaspersky/kuma/ \
 #Create additional directories
-RUN mkdir /opt/kaspersky/kuma/mongodb/cfg
-RUN mkdir /opt/kaspersky/kuma/mongodb/data
-RUN mkdir /opt/kaspersky/kuma/mongodb/log
-RUN mkdir /opt/kaspersky/kuma/mongodb/logrotate
+    && mkdir /opt/kaspersky/kuma/mongodb/cfg \
+    && mkdir /opt/kaspersky/kuma/mongodb/data \
+    && mkdir /opt/kaspersky/kuma/mongodb/log \
+    && mkdir /opt/kaspersky/kuma/mongodb/logrotate \
 #Generate configuration file
-COPY kuma-core-aio/config/mongodb/mongod.conf /opt/kaspersky/kuma/mongodb/cfg/
+#COPY kuma-core-aio/config/mongodb/mongod.conf /opt/kaspersky/kuma/mongodb/cfg/
 #Generate systemd service
-COPY kuma-core-aio/config/mongodb/kuma-mongodb.service /etc/systemd/system/
+#COPY kuma-core-aio/config/mongodb/kuma-mongodb.service /etc/systemd/system/
 #Setup mongodb log rotation
-RUN dnf install logrotate
-COPY kuma-core-aio/config/mongodb/mongo-logrotate.conf /opt/kaspersky/kuma/mongodb/logrotate/
-RUN chmod 0644 /opt/kaspersky/kuma/mongodb/logrotate/mongo-logrotate.conf
-COPY kuma-core-aio/config/mongodb/cron-logrotate /etc/cron.daily/cron-logrotate
-RUN chmod 0755 /etc/cron.daily/cron-logrotate
+    && dnf install logrotate \
+#COPY kuma-core-aio/config/mongodb/mongo-logrotate.conf /opt/kaspersky/kuma/mongodb/logrotate/
+#RUN chmod 0644 /opt/kaspersky/kuma/mongodb/logrotate/mongo-logrotate.conf
+#COPY kuma-core-aio/config/mongodb/cron-logrotate /etc/cron.daily/cron-logrotate
+#RUN chmod 0755 /etc/cron.daily/cron-logrotate
 
-RUN systemctl enable kuma-mongodb.service
+#RUN systemctl enable kuma-mongodb.service
 
 #Task: Install Victoria Metrics
 #Unarchive directory
-RUN tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/victoria-metrics.tar.gz"
-RUN tar -zxvf kuma-ansible-installer/roles/kuma/files/victoria-metrics.tar.gz
-RUN mv victoria-metrics /opt/kaspersky/kuma/
-RUN mkdir /opt/kaspersky/kuma/victoria-metrics/cfg/
+    && tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/victoria-metrics.tar.gz" \
+    && tar -zxvf kuma-ansible-installer/roles/kuma/files/victoria-metrics.tar.gz \
+    && mv victoria-metrics /opt/kaspersky/kuma/ \
+#RUN mkdir /opt/kaspersky/kuma/victoria-metrics/cfg/
 #Create additional directories
-RUN mkdir /opt/kaspersky/kuma/victoria-metrics/cfg/rules
-RUN mkdir /opt/kaspersky/kuma/victoria-metrics/cfg/scrape
+    && mkdir -p /opt/kaspersky/kuma/victoria-metrics/cfg/rules \
+    && mkdir -p /opt/kaspersky/kuma/victoria-metrics/cfg/scrape
 #Generate configuration file
-COPY kuma-core-aio/config/victoria-metrics/victoria-metrics.yml /opt/kaspersky/kuma/victoria-metrics/cfg/
+#COPY kuma-core-aio/config/victoria-metrics/victoria-metrics.yml /opt/kaspersky/kuma/victoria-metrics/cfg/
 #Generate systemd services
-COPY kuma-core-aio/config/victoria-metrics/kuma-victoria-metrics.service /etc/systemd/system/
-RUN systemctl enable kuma-victoria-metrics.service
-COPY kuma-core-aio/config/victoria-metrics/kuma-vmalert.service /etc/systemd/system/
-RUN systemctl enable kuma-vmalert.service
+#COPY kuma-core-aio/config/victoria-metrics/kuma-victoria-metrics.service /etc/systemd/system/
+#RUN systemctl enable kuma-victoria-metrics.service
+#COPY kuma-core-aio/config/victoria-metrics/kuma-vmalert.service /etc/systemd/system/
+#RUN systemctl enable kuma-vmalert.service
 
 #Task: Install Grafana
-RUN tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/grafana.tar.gz"
-RUN tar -zxvf kuma-ansible-installer/roles/kuma/files/grafana.tar.gz
-RUN mv grafana /opt/kaspersky/kuma/
-COPY kuma-core-aio/config/grafana/kuma-grafana.service /etc/systemd/system/
-RUN systemctl enable kuma-grafana.service
+RUN tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/grafana.tar.gz" \
+    && tar -zxvf kuma-ansible-installer/roles/kuma/files/grafana.tar.gz \
+    && mv grafana /opt/kaspersky/kuma/
+#COPY kuma-core-aio/config/grafana/kuma-grafana.service /etc/systemd/system/
+#RUN systemctl enable kuma-grafana.service
 
 #core
-RUN tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/kuma"
+RUN tar -zxvf /kuma-dist/kuma-ansible-installer-3.0.2.37.tar.gz --wildcards "*/kuma/files/kuma" \
 #RUN mv kuma-ansible-installer/roles/kuma/files/kuma /opt/kaspersky/kuma/core/bin
-RUN mv kuma-ansible-installer/roles/kuma/files/kuma /opt/kaspersky/kuma/
-RUN yes | /opt/kaspersky/kuma/kuma license
+    && mv kuma-ansible-installer/roles/kuma/files/kuma /opt/kaspersky/kuma/ \
+    && yes | /opt/kaspersky/kuma/kuma license \
 #Create Core log directories
-RUN mkdir -p /opt/kaspersky/kuma/core/log
-RUN mkdir -p /opt/kaspersky/kuma/core/logrotate
+    && mkdir -p /opt/kaspersky/kuma/core/log
+#RUN mkdir -p /opt/kaspersky/kuma/core/logrotate
 #Setup Core log rotation
-COPY kuma-core-aio/config/core/stdout-logrotate.conf /opt/kaspersky/kuma/core/logrotate/
-COPY kuma-core-aio/config/core/stderr-logrotate.conf /opt/kaspersky/kuma/core/logrotate/
-RUN chmod 0644 /opt/kaspersky/kuma/core/logrotate/stdout-logrotate.conf
-RUN chmod 0644 /opt/kaspersky/kuma/core/logrotate/stderr-logrotate.conf
-COPY kuma-core-aio/config/core/kuma-core-stdout-log-rotate /etc/cron.weekly/
-COPY kuma-core-aio/config/core/kuma-core-stderr-log-rotate /etc/cron.weekly/
-RUN chmod 0755 /etc/cron.weekly/kuma-core-stdout-log-rotate
-RUN chmod 0755 /etc/cron.weekly/kuma-core-stderr-log-rotate
+#COPY kuma-core-aio/config/core/stdout-logrotate.conf /opt/kaspersky/kuma/core/logrotate/
+#COPY kuma-core-aio/config/core/stderr-logrotate.conf /opt/kaspersky/kuma/core/logrotate/
+#COPY kuma-core-aio/config/core/kuma-core-stdout-log-rotate /etc/cron.weekly/
+#COPY kuma-core-aio/config/core/kuma-core-stderr-log-rotate /etc/cron.weekly/
+
 
 #Create log directory
-RUN mkdir -p /var/log/kaspersky/kuma
-RUN chmod 0755 /var/log/kaspersky/kuma
-RUN chown -R kuma:kuma /var/log/kaspersky/kuma
+RUN mkdir -p /var/log/kaspersky/kuma \
+    && chmod 0755 /var/log/kaspersky/kuma \
+    && chown -R kuma:kuma /var/log/kaspersky/kuma
 
-#Set ACL for KUMA directory
-RUN chown -R kuma:kuma /opt/kaspersky/kuma/
 
-COPY kuma-core-aio/scripts/start_core.sh /usr/local/bin
+
+#COPY kuma-core-aio/scripts/start_core.sh /usr/local/bin
 
 #Not working 
 #ENTRYPOINT [ "/usr/local/bin/start_core.sh" ]
@@ -103,8 +99,25 @@ COPY kuma-core-aio/scripts/start_core.sh /usr/local/bin
 #COPY kuma-core-aio/scripts/start_core.sh /etc/local/runonce.d/
 #RUN systemctl enable crond
 #Workaround v2:
-COPY kuma-core-aio/config/core/kuma-core-init.service /etc/systemd/system/
-RUN systemctl enable kuma-core-init.service
+#COPY kuma-core-aio/config/core/kuma-core-init.service /etc/systemd/system/
+COPY kuma-core-aio/rootfs /
+#Set ACL for KUMA directory
+RUN chown -R kuma:kuma /opt/kaspersky/kuma/ \
+    && chmod 0755 /etc/cron.daily/cron-logrotate \
+    && chmod 0755 /etc/cron.weekly/kuma-core-stdout-log-rotate \
+    && chmod 0755 /etc/cron.weekly/kuma-core-stderr-log-rotate \
+    && chmod 0644 /opt/kaspersky/kuma/mongodb/logrotate/mongo-logrotate.conf \
+    && chmod 0644 /opt/kaspersky/kuma/core/logrotate/stdout-logrotate.conf \
+    && chmod 0644 /opt/kaspersky/kuma/core/logrotate/stderr-logrotate.conf \
+    && chmod 0644 /etc/systemd/system/*.service \
+    && systemctl enable kuma-core-init.service \
+    && systemctl enable kuma-core-init.service \
+    && systemctl enable kuma-grafana.service \
+    && systemctl enable kuma-mongodb.service \
+    && systemctl enable kuma-victoria-metrics.service \
+    && systemctl enable kuma-vmalert.service
+
+
 
 CMD ["/sbin/init"]
 

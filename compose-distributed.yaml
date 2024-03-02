@@ -65,7 +65,7 @@ services:
     volumes:
       - kuma-victoria-01:/opt/victoria-metrics
       - kuma-core-certs:/opt/kaspersky/kuma/core/certificates
-      - kuma-victoria-scrape:/opt/victoria-metrics/cfg/scrape/
+      - kuma-victoria-scrape:/opt/victoria-metrics/cfg/scrape
     #for tcpdump
     cap_add:
       - NET_RAW
